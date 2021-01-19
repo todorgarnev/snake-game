@@ -14,7 +14,16 @@ interface Cell {
 
 function App() {
   const [field, setField] = useState<Cell[]>([]);
-  const [snakePosition, setSnakePosition] = useState<Cell | null>(null);
+  const [prevSnakePosition, setPrevSnakePosition] = useState<Cell>({
+    x: 12,
+    y: 12,
+    type: cellType.snake
+  });
+  const [snakePosition, setSnakePosition] = useState<Cell>({
+    x: 12,
+    y: 12,
+    type: cellType.snake
+  });
 
   useEffect(() => {
     const arr: Cell[] = [];
@@ -44,26 +53,73 @@ function App() {
     }
     console.log(arr);
     setField(arr);
-
     document.addEventListener("keydown", handleKeyPress);
+
     return function cleanup() {
       document.removeEventListener("keydown", handleKeyPress);
     }
   }, []);
 
+  useEffect(() => {
+    const updatedField: Cell[] = [...field];
+    const nextIndex: number = field.findIndex((cell: Cell) => cell.x === snakePosition.x && cell.y === snakePosition.y);
+    const prevIndex: number = field.findIndex((cell: Cell) => cell.x === prevSnakePosition.x && cell.y === prevSnakePosition.y);
+
+    if (nextIndex > -1) {
+      updatedField[nextIndex] = {
+        ...snakePosition
+      };
+      updatedField[prevIndex] = {
+        ...prevSnakePosition,
+        type: cellType.empty
+      };
+      setField(updatedField);
+    } else {
+      console.log("GAME OVER");
+    }
+  }, [snakePosition]);
+
   const handleKeyPress = (event: KeyboardEvent): void => {
     switch (event.key) {
       case "ArrowUp":
-        console.log("UP")
+        setSnakePosition((prevState: Cell) => {
+          setPrevSnakePosition(prevState);
+          return {
+            x: prevState.x - 1,
+            y: prevState.y,
+            type: cellType.snake
+          }
+        });
         break;
       case "ArrowDown":
-        console.log("DOWN")
+        setSnakePosition((prevState: Cell) => {
+          setPrevSnakePosition(prevState);
+          return {
+            x: prevState.x + 1,
+            y: prevState.y,
+            type: cellType.snake
+          }
+        });
         break;
       case "ArrowRight":
-        console.log("RIGHT")
+        setSnakePosition((prevState: Cell) => {
+          setPrevSnakePosition(prevState);
+          return {
+            x: prevState.x,
+            y: prevState.y + 1,
+            type: cellType.snake
+          }
+        });
         break;
       case "ArrowLeft":
-        console.log("LEFT")
+        setSnakePosition((prevState: Cell) => {
+          setPrevSnakePosition(prevState);
+          return {
+            x: prevState.x,
+            y: prevState.y - 1,
+            type: cellType.snake
+          }
+        });
         break;
       default:
         break;
