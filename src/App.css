@@ -31,6 +31,11 @@ h1 {
   animation: snake-blink 1.2s infinite;
 }
 
+.field .cell.food {
+  width: 2rem;
+  height: 2rem;
+  background-color: orangered;
+}
 
 @keyframes snake-blink {
   0% { opacity: 100%; }
