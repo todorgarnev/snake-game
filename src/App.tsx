@@ -13,6 +13,13 @@ function App() {
   const [direction, setDirection] = useState<Direction>(Direction.Right);
   const [isGameOn, setIsGameOn] = useState<boolean>(true);
 
+  // refactor the rendundant states
+  // rename some of the existing states
+  // add a check if food and snake are not in the same spot
+  // start button
+  // add result counter
+  // add game over text
+
   const handleKeyPress = useCallback((event: KeyboardEvent): void => {
     switch (event.key) {
       case ArrowType.ArrowUp:

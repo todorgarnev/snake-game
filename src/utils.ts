@@ -45,8 +45,6 @@ export const isInField = (cell: Cell, field: Cell[]): boolean => field.some((fie
 export const isFoodEaten = (snakeHead: Cell, food: Cell): boolean => snakeHead.x === food.x && snakeHead.y === food.y;
 
 export const moveSnake = (snake: Cell[], direction: Direction): Cell[] => {
-  console.log(snake);
-
   return snake.map((cell: Cell, index) => {
     let updatedCell: Cell = cell;
 
