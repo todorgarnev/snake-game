@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ArrowType, Cell, cellType } from "./models";
-import { getCell, getField, } from "./utils";
+import { getCell, getField, updateField, } from "./utils";
 import "./App.css";
 
 function App() {
@@ -12,16 +12,12 @@ function App() {
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
-
-    console.log("field >>", field);
-    console.log("food >>", food);
-    console.log("snakeHead >>", snakeHead);
-
+    setField(updateField(field, food, snakeHead));
 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     }
-  }, []);
+  }, [food, snakeHead]);
 
   const handleKeyPress = (event: KeyboardEvent): void => {
     if (

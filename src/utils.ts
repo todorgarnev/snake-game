@@ -23,3 +23,21 @@ export const getCell = (cellType: cellType): Cell => {
     type: cellType,
   };
 };
+
+export const updateField = (field: Cell[], ...cells: Cell[]) => {
+  const updatedField: Cell[] = [...field];
+
+  cells.forEach((cell: Cell) => {
+    const matchedFieldCell: number = field.findIndex((fieldCell: Cell) => fieldCell.x === cell.x && fieldCell.y === cell.y);
+
+    if (matchedFieldCell >= 0) {
+      updatedField[matchedFieldCell] = {
+        x: cell.x,
+        y: cell.y,
+        type: cell.type
+      };
+    }
+  });
+
+  return updatedField;
+};
