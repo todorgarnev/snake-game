@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Cell, cellType, Direction, ArrowType } from "./models";
 import { getCell, getField, isInField, updateField, isFoodEaten } from "./utils";
 import useInterval from "./useInterval";
@@ -12,27 +12,34 @@ function App() {
   const [snakeBody, setSnakeBody] = useState<Cell[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.Right);
   const [isGameOn, setIsGameOn] = useState<boolean>(true);
-  let snakeInterval = useRef();
 
   const handleKeyPress = useCallback((event: KeyboardEvent): void => {
     switch (event.key) {
       case ArrowType.ArrowUp:
-        setDirection(Direction.Top);
+        if (direction !== Direction.Down) {
+          setDirection(Direction.Top);
+        }
         break;
       case ArrowType.ArrowRight:
-        setDirection(Direction.Right);
+        if (direction !== Direction.Left) {
+          setDirection(Direction.Right);
+        }
         break;
       case ArrowType.ArrowDown:
-        setDirection(Direction.Down);
+        if (direction !== Direction.Top) {
+          setDirection(Direction.Down);
+        }
         break;
       case ArrowType.ArrowLeft:
-        setDirection(Direction.Left);
+        if (direction !== Direction.Right) {
+          setDirection(Direction.Left);
+        }
         break;
       default:
         break;
     }
 
-  }, []);
+  }, [direction]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
@@ -42,46 +49,6 @@ function App() {
       document.removeEventListener("keydown", handleKeyPress);
     }
   }, [handleKeyPress]);
-
-  useInterval(() => {
-      setPrevSnakeHead({
-        x: snakeHead.x,
-        y: snakeHead.y,
-        type: cellType.empty
-      });
-
-      setSnakeHead((prevSnakeHead: Cell) => {
-        switch (direction) {
-          case Direction.Top:
-            return {
-              x: prevSnakeHead.x - 1,
-              y: prevSnakeHead.y,
-              type: prevSnakeHead.type
-            };
-          case Direction.Right:
-            return {
-              x: prevSnakeHead.x,
-              y: prevSnakeHead.y + 1,
-              type: prevSnakeHead.type
-            };
-          case Direction.Down:
-            return {
-              x: prevSnakeHead.x + 1,
-              y: prevSnakeHead.y,
-              type: prevSnakeHead.type
-            };
-          case Direction.Left:
-            return {
-              x: prevSnakeHead.x,
-              y: prevSnakeHead.y - 1,
-              type: prevSnakeHead.type
-            };
-          default:
-            break;
-        }
-        return prevSnakeHead;
-      });
-  }, isGameOn ? 150 : null);
 
   useEffect(() => {
     if (isInField(snakeHead, field)) {
@@ -101,6 +68,46 @@ function App() {
       setIsGameOn(false);
     }
   }, [snakeHead]);
+
+  useInterval(() => {
+    setPrevSnakeHead({
+      x: snakeHead.x,
+      y: snakeHead.y,
+      type: cellType.empty
+    });
+
+    setSnakeHead((prevSnakeHead: Cell) => {
+      switch (direction) {
+        case Direction.Top:
+          return {
+            x: prevSnakeHead.x - 1,
+            y: prevSnakeHead.y,
+            type: prevSnakeHead.type
+          };
+        case Direction.Right:
+          return {
+            x: prevSnakeHead.x,
+            y: prevSnakeHead.y + 1,
+            type: prevSnakeHead.type
+          };
+        case Direction.Down:
+          return {
+            x: prevSnakeHead.x + 1,
+            y: prevSnakeHead.y,
+            type: prevSnakeHead.type
+          };
+        case Direction.Left:
+          return {
+            x: prevSnakeHead.x,
+            y: prevSnakeHead.y - 1,
+            type: prevSnakeHead.type
+          };
+        default:
+          break;
+      }
+      return prevSnakeHead;
+    });
+}, isGameOn ? 150 : null);
 
   return (
     <div className="app">
