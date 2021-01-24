@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Cell, cellType, Direction, ArrowType } from "./models";
 import { getCell, getField, isInField, updateField, isFoodEaten } from "./utils";
+import useInterval from "./useInterval";
 import "./App.css";
 
 function App() {
@@ -11,7 +12,7 @@ function App() {
   const [snakeBody, setSnakeBody] = useState<Cell[]>([]);
   const [direction, setDirection] = useState<Direction>(Direction.Right);
   const [isGameOn, setIsGameOn] = useState<boolean>(true);
-  let snakeInterval: NodeJS.Timeout;
+  let snakeInterval = useRef();
 
   const handleKeyPress = useCallback((event: KeyboardEvent): void => {
     switch (event.key) {
@@ -31,7 +32,7 @@ function App() {
         break;
     }
 
-  }, [direction]);
+  }, []);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
@@ -42,65 +43,64 @@ function App() {
     }
   }, [handleKeyPress]);
 
-  useEffect(() => {
-    if (isGameOn) {
-      snakeInterval = setInterval(() => {
-        setPrevSnakeHead({
-          x: snakeHead.x,
-          y: snakeHead.y,
-          type: cellType.empty
-        });
-        setSnakeHead((prevSnakeHead: Cell) => {
-          switch (direction) {
-            case Direction.Top:
-              return {
-                x: prevSnakeHead.x - 1,
-                y: prevSnakeHead.y,
-                type: prevSnakeHead.type
-              };
-            case Direction.Right:
-              return {
-                x: prevSnakeHead.x,
-                y: prevSnakeHead.y + 1,
-                type: prevSnakeHead.type
-              };
-            case Direction.Down:
-              return {
-                x: prevSnakeHead.x + 1,
-                y: prevSnakeHead.y,
-                type: prevSnakeHead.type
-              };
-            case Direction.Left:
-              return {
-                x: prevSnakeHead.x,
-                y: prevSnakeHead.y - 1,
-                type: prevSnakeHead.type
-              };
-            default:
-              break;
-          }
-          return prevSnakeHead;
-        });
-      }, 200);
-    } else {
-      clearInterval(snakeInterval);
-      alert("Game over");
-    }
+  useInterval(() => {
+      setPrevSnakeHead({
+        x: snakeHead.x,
+        y: snakeHead.y,
+        type: cellType.empty
+      });
 
-    return () => clearInterval(snakeInterval);
-  }, [isGameOn, direction, snakeHead])
+      setSnakeHead((prevSnakeHead: Cell) => {
+        switch (direction) {
+          case Direction.Top:
+            return {
+              x: prevSnakeHead.x - 1,
+              y: prevSnakeHead.y,
+              type: prevSnakeHead.type
+            };
+          case Direction.Right:
+            return {
+              x: prevSnakeHead.x,
+              y: prevSnakeHead.y + 1,
+              type: prevSnakeHead.type
+            };
+          case Direction.Down:
+            return {
+              x: prevSnakeHead.x + 1,
+              y: prevSnakeHead.y,
+              type: prevSnakeHead.type
+            };
+          case Direction.Left:
+            return {
+              x: prevSnakeHead.x,
+              y: prevSnakeHead.y - 1,
+              type: prevSnakeHead.type
+            };
+          default:
+            break;
+        }
+        return prevSnakeHead;
+      });
+  }, isGameOn ? 150 : null);
 
   useEffect(() => {
     if (isInField(snakeHead, field)) {
       if (isFoodEaten(snakeHead, food)) {
-        console.log("food is eaten");
+        setSnakeBody((prevSnakeBody: Cell[]) => [
+          ...prevSnakeBody,
+          {
+            x: food.x,
+            y: food.y,
+            type: cellType.snake
+          }
+        ]);
+        setFood(getCell(cellType.food));
       }
-      setField(updateField(field, food, snakeHead, prevSnakeHead));
+      setField(updateField(field, food, snakeHead, prevSnakeHead, ...snakeBody));
     } else {
       setIsGameOn(false);
     }
   }, [snakeHead]);
-
 
   return (
     <div className="app">

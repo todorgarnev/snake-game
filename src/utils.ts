@@ -16,13 +16,11 @@ export const getField = (fieldSize: number): Cell[] => {
   return arr;
 };
 
-export const getCell = (cellType: cellType): Cell => {
-  return {
+export const getCell = (cellType: cellType): Cell => ({
     x: Math.floor(Math.random() * Math.floor(24)),
     y: Math.floor(Math.random() * Math.floor(24)),
     type: cellType,
-  };
-};
+});
 
 export const updateField = (field: Cell[], ...cells: Cell[]): Cell[] => {
   const updatedField: Cell[] = [...field];
