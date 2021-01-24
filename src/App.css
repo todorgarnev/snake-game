@@ -28,7 +28,7 @@ h1 {
 
 .field .cell.snake {
   background-color: #7d47dd;
-  animation: snake-blink 1.2s infinite;
+  /* animation: snake-blink 1.2s infinite; */
 }
 
 .field .cell.food {
