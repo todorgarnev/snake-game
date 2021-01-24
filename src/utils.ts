@@ -24,7 +24,7 @@ export const getCell = (cellType: cellType): Cell => {
   };
 };
 
-export const updateField = (field: Cell[], ...cells: Cell[]) => {
+export const updateField = (field: Cell[], ...cells: Cell[]): Cell[] => {
   const updatedField: Cell[] = [...field];
 
   cells.forEach((cell: Cell) => {
@@ -41,3 +41,7 @@ export const updateField = (field: Cell[], ...cells: Cell[]) => {
 
   return updatedField;
 };
+
+export const isInField = (cell: Cell, field: Cell[]): boolean => field.some((fieldCell: Cell) => fieldCell.x === cell.x && fieldCell.y === cell.y);
+
+export const isFoodEaten = (snakeHead: Cell, food: Cell): boolean => snakeHead.x === food.x && snakeHead.y === food.y;
