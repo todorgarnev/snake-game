@@ -53,6 +53,13 @@ function App() {
   useEffect(() => {
     if (isInField(snake[0], field)) {
       if (isFoodEaten(snake[0], food)) {
+        setSpeed((prevSpeed: number) => {
+          if (prevSpeed > 50) {
+            return prevSpeed - 50
+          } else {
+            return prevSpeed;
+          }
+        });
         setSnake((snake: Cell[]) => [
           ...snake,
           {
