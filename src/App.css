@@ -28,13 +28,41 @@ h1 {
 
 .field .cell.snake {
   background-color: #7d47dd;
-  /* animation: snake-blink 1.2s infinite; */
+  animation: snake-blink 1.2s infinite;
 }
 
 .field .cell.food {
   width: 2rem;
   height: 2rem;
   background-color: orangered;
+}
+
+.game-over {
+  font-size: 5em;
+  font-weight: 600;
+  color: deepskyblue;
+  text-transform: uppercase;
+}
+
+.start-game {
+  margin: 1em 0;
+  padding: 0.3em 1em;
+  border: none;
+  border-radius: 0.5em;
+  color: orangered;
+  background-color: #fafafa;
+  font-size: 2em;
+  font-weight: 600;
+  outline: none;
+}
+
+.start-game:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.start-game:active {
+  transform: scale(0.95);
 }
 
 @keyframes snake-blink {

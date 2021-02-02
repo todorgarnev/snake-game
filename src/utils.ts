@@ -3,6 +3,7 @@ import { Cell, cellType, Direction } from "./models";
 export const getField = (fieldSize: number): Cell[] => {
   const arr: Cell[] = [];
 
+  // maybe update with for in
   for (let i = 0; i < fieldSize; i++) {
     for (let y = 0; y < fieldSize; y++) {
       arr.push({
@@ -16,24 +17,24 @@ export const getField = (fieldSize: number): Cell[] => {
   return arr;
 };
 
-export const getCell = (cellType: cellType): Cell => ({
-    x: Math.floor(Math.random() * Math.floor(24)),
-    y: Math.floor(Math.random() * Math.floor(24)),
+export const getCell = (cellType: cellType, fieldSize: number): Cell => ({
+  x: Math.floor(Math.random() * Math.floor(fieldSize - 1)),
+  y: Math.floor(Math.random() * Math.floor(fieldSize - 1)),
     type: cellType,
 });
 
 export const updateField = (field: Cell[], ...cells: Cell[]): Cell[] => {
   const updatedField: Cell[] = [...field];
 
-  cells.forEach((cell: Cell) => {
-    const matchedFieldCell: number = field.findIndex((fieldCell: Cell) => fieldCell.x === cell.x && fieldCell.y === cell.y);
+  updatedField.forEach((fieldCell: Cell) => {
+    const matchedCell: Cell | undefined = cells.find((cell: Cell) => fieldCell.x === cell.x && fieldCell.y === cell.y);
 
-    if (matchedFieldCell >= 0) {
-      updatedField[matchedFieldCell] = {
-        x: cell.x,
-        y: cell.y,
-        type: cell.type
-      };
+    if (matchedCell) {
+      fieldCell.x = matchedCell.x;
+      fieldCell.y = matchedCell.y;
+      fieldCell.type = matchedCell.type;
+    } else if (fieldCell.type === cellType.snake) {
+      fieldCell.type = cellType.empty;
     }
   });
 
