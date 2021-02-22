@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Cell, cellType, Direction, ArrowType } from "./models";
-import { getCell, getField, isInField, updateField, isFoodEaten, moveSnake } from "./utils";
+import {
+  getCell,
+  getField,
+  isInField,
+  updateField,
+  isFoodEaten,
+  moveSnake
+} from "./utils";
 import useInterval from "./useInterval";
 import "./App.css";
 
@@ -9,31 +16,28 @@ function App() {
   const [food, setFood] = useState<Cell>(getCell(cellType.food, 25));
   const [snake, setSnake] = useState<Cell[]>([getCell(cellType.snake, 25)]);
   const [direction, setDirection] = useState<Direction>(Direction.Right);
-  const [speed, setSpeed] = useState<number>(500);
+  const [speed, setSpeed] = useState<number>(300);
   const [isGameOn, setIsGameOn] = useState<boolean>(true);
-
-  // add a check if food and snake are not in the same spot
-  // add result counter
 
   const handleKeyPress = useCallback((event: KeyboardEvent): void => {
     switch (event.key) {
       case ArrowType.ArrowUp:
-        if (direction !== Direction.Down && direction !== Direction.Top) {
+        if (direction !== Direction.Down) {
           setDirection(Direction.Top);
         }
         break;
       case ArrowType.ArrowRight:
-        if (direction !== Direction.Left && direction !== Direction.Right) {
+        if (direction !== Direction.Left) {
           setDirection(Direction.Right);
         }
         break;
       case ArrowType.ArrowDown:
-        if (direction !== Direction.Top && direction !== Direction.Down) {
+        if (direction !== Direction.Top) {
           setDirection(Direction.Down);
         }
         break;
       case ArrowType.ArrowLeft:
-        if (direction !== Direction.Right && direction !== Direction.Left) {
+        if (direction !== Direction.Right) {
           setDirection(Direction.Left);
         }
         break;
@@ -51,15 +55,16 @@ function App() {
   }, [handleKeyPress]);
 
   useEffect(() => {
-    if (isInField(snake[0], field)) {
+    if (snake.length > 0 && isInField(snake[0], field)) {
       if (isFoodEaten(snake[0], food)) {
         setSpeed((prevSpeed: number) => {
-          if (prevSpeed > 50) {
-            return prevSpeed - 50
+          if (prevSpeed > 100) {
+            return prevSpeed - 15
           } else {
             return prevSpeed;
           }
         });
+
         setSnake((snake: Cell[]) => [
           ...snake,
           {
@@ -68,6 +73,7 @@ function App() {
             type: cellType.snake
           }
         ]);
+
         setFood(getCell(cellType.food, 25));
       }
       setField(updateField(field, food, ...snake));
@@ -77,12 +83,13 @@ function App() {
   }, [snake]);
 
   useInterval(() => {
-    setSnake(moveSnake(snake, direction));
+    setSnake(moveSnake(snake, direction, field));
   }, isGameOn ? speed : null);
 
   const onButtonClick = (): void => {
     setIsGameOn(true);
     setSnake([getCell(cellType.snake, 25)]);
+    setSpeed(300);
   };
 
   return (

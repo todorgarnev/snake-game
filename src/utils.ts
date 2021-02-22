@@ -43,40 +43,61 @@ export const updateField = (field: Cell[], ...cells: Cell[]): Cell[] => {
 
 export const isInField = (cell: Cell, field: Cell[]): boolean => field.some((fieldCell: Cell) => fieldCell.x === cell.x && fieldCell.y === cell.y);
 
-export const isFoodEaten = (snakeHead: Cell, food: Cell): boolean => snakeHead.x === food.x && snakeHead.y === food.y;
+export const isFoodEaten = (snake: Cell, food: Cell): boolean => snake.x === food.x && snake.y === food.y;
 
-export const moveSnake = (snake: Cell[], direction: Direction): Cell[] => {
+export const moveSnake = (snake: Cell[], direction: Direction, field: Cell[]): Cell[] | any[] => {
   return snake.map((cell: Cell, index) => {
     let updatedCell: Cell = cell;
+    let nextCell: Cell | undefined;
 
     if (index === 0) {
       switch (direction) {
         case Direction.Top:
+          nextCell = field.find(cell => cell.x === updatedCell.x - 1 && cell.y === updatedCell.y);
+          if (nextCell && nextCell.type === cellType.snake) {
+            return [];
+          }
+
           return {
             x: updatedCell.x - 1,
             y: updatedCell.y,
             type: updatedCell.type
           }
         case Direction.Right:
+          nextCell = field.find(cell => cell.x === updatedCell.x && cell.y === updatedCell.y + 1);
+          if (nextCell && nextCell.type === cellType.snake) {
+            return [];
+          }
+
           return {
             x: updatedCell.x,
             y: updatedCell.y + 1,
             type: updatedCell.type
           }
         case Direction.Down:
+          nextCell = field.find(cell => cell.x === updatedCell.x + 1 && cell.y === updatedCell.y);
+          if (nextCell && nextCell.type === cellType.snake) {
+            return [];
+          }
+
           return {
             x: updatedCell.x + 1,
             y: updatedCell.y,
             type: updatedCell.type
           }
         case Direction.Left:
+          nextCell = field.find(cell => cell.x === updatedCell.x && cell.y === updatedCell.y - 1);
+          if (nextCell && nextCell.type === cellType.snake) {
+            return [];
+          }
+
           return {
             x: updatedCell.x,
             y: updatedCell.y - 1,
             type: updatedCell.type
           }
         default:
-          return updatedCell
+          return updatedCell;
       }
     }
 
