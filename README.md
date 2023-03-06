@@ -1,4 +1,4 @@
-# Weather App
+# Snake App
 
 ### Demo
 :snake: [snake](https://eager-kalam-42bf68.netlify.app/) :snake:
